@@ -6,15 +6,9 @@ class ConfigManager {
     config = null;
     configPath;
     constructor() {
-        // 优先查找根目录的config.json5，如果不存在则使用dist目录下的
-        const rootConfigPath = resolve(process.cwd(), 'config.json5');
-        const distConfigPath = resolve(process.cwd(), 'dist', 'config.json5');
-        if (existsSync(rootConfigPath)) {
-            this.configPath = rootConfigPath;
-        }
-        else {
-            this.configPath = distConfigPath;
-        }
+        this.configPath = ['config.json5', 'dist/config.json5']
+            .map(p => resolve(process.cwd(), p))
+            .find(existsSync) ?? resolve(process.cwd(), 'config.json5');
     }
     /**
      * 加载配置文件
