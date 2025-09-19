@@ -5,8 +5,10 @@ import { LoginTask } from './tasks/loginTask.js';
 import { initHttpClient } from './core/http.js';
 import { mainLogger } from './core/logger.js';
 import { pcLogin } from './core/auth/pc-login.js';
-import { cookieManager } from './core/network/index.js';
 import { fileURLToPath } from 'url';
+
+// @ts-ignore
+const $ = new Env('哔哩哔哩 - 登录');
 
 /**
  * 检查登录状态的独立入口文件
