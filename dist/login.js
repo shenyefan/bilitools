@@ -52,14 +52,6 @@ async function checkLoginStatus() {
                 mainLogger.info(`等级: ${userInfo.level}`);
                 mainLogger.info(`硬币: ${userInfo.coins}`);
                 mainLogger.info(`VIP状态: ${userInfo.vipStatus === 1 ? '是' : '否'}`);
-                // 输出JSON格式的用户信息，便于其他程序解析
-                console.log('USER_INFO:', JSON.stringify({
-                    username: userInfo.username,
-                    level: userInfo.level,
-                    coins: userInfo.coins,
-                    vipStatus: userInfo.vipStatus,
-                    loginStatus: 'success'
-                }));
             }
             process.exit(0);
         }
@@ -68,56 +60,7 @@ async function checkLoginStatus() {
             mainLogger.error(`错误信息: ${result.message}`);
             // 启动扫码登录流程
             mainLogger.info('检测到未登录，正在启动扫码登录...');
-            try {
-                await pcLogin();
-                mainLogger.info('扫码登录流程完成');
-                // 重新加载配置以获取更新后的cookie
-                config = loadConfig();
-                // 重新初始化HTTP客户端以使用新的cookie
-                initHttpClient(config);
-                // 重新执行登录检查
-                const newLoginTask = new LoginTask();
-                const newResult = await newLoginTask.execute();
-                if (newResult.success) {
-                    const newUserInfo = newLoginTask.getUserInfo();
-                    mainLogger.info('登录验证成功！');
-                    if (newUserInfo) {
-                        mainLogger.info(`用户名: ${newUserInfo.username}`);
-                        mainLogger.info(`等级: ${newUserInfo.level}`);
-                        mainLogger.info(`硬币: ${newUserInfo.coins}`);
-                        mainLogger.info(`VIP状态: ${newUserInfo.vipStatus === 1 ? '是' : '否'}`);
-                        // 输出JSON格式的用户信息
-                        console.log('USER_INFO:', JSON.stringify({
-                            username: newUserInfo.username,
-                            level: newUserInfo.level,
-                            coins: newUserInfo.coins,
-                            vipStatus: newUserInfo.vipStatus,
-                            loginStatus: 'success',
-                            loginMethod: 'qrcode'
-                        }));
-                    }
-                    process.exit(0);
-                }
-                else {
-                    mainLogger.error('登录验证失败:', newResult.message);
-                    console.log('USER_INFO:', JSON.stringify({
-                        loginStatus: 'failed',
-                        error: '扫码登录后验证失败: ' + newResult.message,
-                        loginMethod: 'qrcode'
-                    }));
-                    process.exit(1);
-                }
-            }
-            catch (qrError) {
-                const qrErrorMessage = qrError instanceof Error ? qrError.message : '扫码登录过程中发生未知错误';
-                mainLogger.error('扫码登录过程中发生错误:', qrErrorMessage);
-                console.log('USER_INFO:', JSON.stringify({
-                    loginStatus: 'failed',
-                    error: '扫码登录错误: ' + qrErrorMessage,
-                    loginMethod: 'qrcode'
-                }));
-                process.exit(1);
-            }
+            await pcLogin();
         }
     }
     catch (error) {
