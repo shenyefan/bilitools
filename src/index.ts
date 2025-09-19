@@ -6,7 +6,11 @@ import { initHttpClient } from './core/http.js';
 import { mainLogger } from './core/logger.js';
 import { fileURLToPath } from 'url';
 
-// @ts-ignore
+// 兼容青龙面板环境
+class Env {
+  constructor(public name: string) {}
+}
+
 const $ = new Env('哔哩哔哩 - 每日任务');
 
 /**

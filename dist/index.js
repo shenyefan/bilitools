@@ -4,7 +4,13 @@ import { TaskScheduler } from './core/scheduler.js';
 import { initHttpClient } from './core/http.js';
 import { mainLogger } from './core/logger.js';
 import { fileURLToPath } from 'url';
-// @ts-ignore
+// 兼容青龙面板环境
+class Env {
+    name;
+    constructor(name) {
+        this.name = name;
+    }
+}
 const $ = new Env('哔哩哔哩 - 每日任务');
 /**
  * 执行每日任务的独立入口文件

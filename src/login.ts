@@ -7,7 +7,11 @@ import { mainLogger } from './core/logger.js';
 import { pcLogin } from './core/auth/pc-login.js';
 import { fileURLToPath } from 'url';
 
-// @ts-ignore
+// 兼容青龙面板环境
+class Env {
+  constructor(public name: string) {}
+}
+
 const $ = new Env('哔哩哔哩 - 登录');
 
 /**
