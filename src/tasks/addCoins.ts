@@ -1,6 +1,6 @@
 import { getHttpClient } from '../core/http.js';
 import type { CoinResult, TaskResult, ApiResponse } from '../types/user.js';
-import type { CoinConfig } from '../types/config.js';
+import type { CoinTaskConfig } from '../types/config.js';
 import { coinsLogger } from '../core/logger.js';
 
 interface VideoInfo {
@@ -28,9 +28,9 @@ interface CoinResponse {
 
 class AddCoinsTask {
   private httpClient = getHttpClient();
-  private config: CoinConfig;
+  private config: CoinTaskConfig;
 
-  constructor(config: CoinConfig) {
+  constructor(config: CoinTaskConfig) {
     this.config = config;
   }
 
@@ -69,8 +69,9 @@ class AddCoinsTask {
 
         // 投币间隔
         if (this.config.delay > 0) {
-          coinsLogger.debug(`等待 ${this.config.delay}ms 后继续下一个视频`);
-          await this.delay(this.config.delay);
+          const randomDelay = Math.floor(Math.random() * this.config.delay * 1000);
+          coinsLogger.debug(`等待 ${randomDelay}ms 后继续投币`);
+          await this.delay(randomDelay);
         }
       }
 
@@ -163,7 +164,7 @@ class AddCoinsTask {
       );
 
       if (response.code === 0) {
-        coinsLogger.info(`投币成功: ${video.title}, 投币数量: ${this.config.coinsPerVideo}`);
+        coinsLogger.info(`投币成功 (${this.config.coinsPerVideo}个)`);
         return {
           aid: video.aid,
           bvid: video.bvid,
@@ -173,7 +174,7 @@ class AddCoinsTask {
           message: '投币成功'
         };
       } else {
-        coinsLogger.error(`投币失败: ${video.title} - ${response.message}`);
+        coinsLogger.error(`投币失败 - ${response.message}`);
         return {
           aid: video.aid,
           bvid: video.bvid,

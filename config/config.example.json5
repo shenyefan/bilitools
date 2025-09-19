@@ -2,36 +2,36 @@
   // 用户配置
   "cookie": "your_bilibili_cookie_here",
   "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-  
-  // 投币配置
+
+  // 全局任务配置
+  "global": {
+    "startupDelay": 1800      // 任务启动前延迟（秒）
+  },
+
+  // 投币任务配置
   "coin": {
+    "enabled": true,         // 是否启用投币任务
     "targetCoins": 2,        // 每日目标投币数
     "targetLevel": 6,        // 目标等级
     "stayCoins": 0,
     "retryNum": 3,
     "coinsPerVideo": 1,
     "selectLike": true,
-    "delay": 1000
+    "delay": 30            // 任务延迟（秒）
   },
   
-  // 功能开关
-  "function": {
-    "addCoins": true,        // 是否启用投币
-    "shareAndWatch": true,   // 是否启用分享观看
-    "watchVideo": true       // 是否启用视频观看
+  // 分享观看任务配置
+  "shareAndWatch": {
+    "enabled": true,         // 是否启用分享观看任务
+    "delay": 30               // 任务延迟（秒）
   },
   
-  // 限制配置
-  "limit": {
-    "level6": true,          // 6级后是否停止部分功能
-    "coins5": true          // 是否限制最多5币
+  // 视频观看任务配置
+  "watchVideo": {
+    "enabled": true,         // 是否启用视频观看任务
+    "delay": 30               // 任务延迟（秒）
   },
-  
-  // 日志配置
-  "log": {
-    "level": "info"          // 日志级别: debug, info, warn, error
-  },
-  
+
   // 通知配置
   "notification": {
     "wechatWork": {
@@ -48,6 +48,11 @@
   "network": {
     "timeout": 10000,        // 请求超时时间
     "retries": 3,            // 重试次数
-    "delay": 1000            // 请求间隔
+    "delay": 30            // 请求间隔
+  },
+  
+  // 日志配置
+  "log": {
+    "level": "info"          // 日志级别: debug, info, warn, error
   }
 }

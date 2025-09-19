@@ -52,7 +52,7 @@ class LoginTask {
         isLogin: true
       };
 
-      loginLogger.info(`登录成功！欢迎 ${this.userInfo.username}(Lv.${this.userInfo.level}), 硬币: ${this.userInfo.coins}`);
+      loginLogger.info(`欢迎 ${this.userInfo.username}(Lv.${this.userInfo.level}), 硬币: ${this.userInfo.coins}`);
       
       return {
         taskType: 'loginTask',

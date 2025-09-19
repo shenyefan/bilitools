@@ -17,11 +17,17 @@ class ShareAndWatchTask {
             const video = await this.getRecommendVideo();
             // 执行分享任务
             const shareResult = await this.shareVideo(video);
+            // 分享和观看之间的延迟间隔
+            if (this.config.delay > 0) {
+                const randomDelay = Math.floor(Math.random() * this.config.delay * 1000);
+                shareLogger.debug(`等待 ${randomDelay}ms 后开始观看视频`);
+                await this.delay(randomDelay);
+            }
             // 执行观看任务
             const watchResult = await this.watchVideo(video);
             const success = shareResult && watchResult;
             const message = success
-                ? `分享观看任务完成: ${video.title}`
+                ? `分享观看任务完成`
                 : '分享观看任务部分失败';
             if (success) {
                 shareLogger.info(message);
@@ -140,16 +146,16 @@ class ShareAndWatchTask {
                 play_type: 1
             });
             if (response.code === 0) {
-                shareLogger.info(`视频观看完成: ${video.title}`);
+                shareLogger.info(`视频观看完成`);
                 return true;
             }
             else {
-                shareLogger.warn(`视频观看上报失败: ${video.title} - ${response.message}`);
+                shareLogger.warn(`视频观看上报失败 - ${response.message}`);
                 return false;
             }
         }
         catch (error) {
-            shareLogger.error(`视频观看异常: ${video.title}`, error);
+            shareLogger.error(`视频观看异常`, error);
             return false;
         }
     }

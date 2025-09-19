@@ -1,6 +1,6 @@
 import { getHttpClient } from '../core/http.js';
 import type { WatchResult, TaskResult, ApiResponse } from '../types/user.js';
-import type { FunctionConfig } from '../types/config.js';
+import type { WatchVideoTaskConfig } from '../types/config.js';
 import { watchLogger } from '../core/logger.js';
 
 interface VideoInfo {
@@ -30,9 +30,9 @@ interface VideoDetailResponse {
 
 class WatchVideoTask {
   private httpClient = getHttpClient();
-  private config: FunctionConfig;
+  private config: WatchVideoTaskConfig;
 
-  constructor(config: FunctionConfig) {
+  constructor(config: WatchVideoTaskConfig) {
     this.config = config;
   }
 
@@ -56,8 +56,10 @@ class WatchVideoTask {
         results.push(watchResult);
         
         // 观看间隔
-        if (i < targetCount - 1) {
-          await this.delay(5000); // 5秒间隔
+        if (i < targetCount - 1 && this.config.delay > 0) {
+          const randomDelay = Math.floor(Math.random() * this.config.delay * 1000);
+          watchLogger.debug(`等待 ${randomDelay}ms 后观看下一个视频`);
+          await this.delay(randomDelay);
         }
       }
 

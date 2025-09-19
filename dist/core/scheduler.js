@@ -1,4 +1,4 @@
-import { getConfig } from './config.js';
+import { getConfig, ConfigManager } from './config.js';
 import { sendWechatWorkNotification } from './notification.js';
 import { LoginTask } from '../tasks/loginTask.js';
 import { AddCoinsTask } from '../tasks/addCoins.js';
@@ -7,9 +7,21 @@ import { WatchVideoTask } from '../tasks/watchVideo.js';
 import { schedulerLogger } from './logger.js';
 class TaskScheduler {
     config;
+    configManager;
     userInfo = null;
     constructor() {
         this.config = getConfig();
+        this.configManager = new ConfigManager();
+    }
+    /**
+     * 延迟执行（随机延迟）
+     */
+    async delay(maxSeconds) {
+        if (maxSeconds > 0) {
+            const randomSeconds = Math.floor(Math.random() * maxSeconds);
+            schedulerLogger.info(`执行全局启动延迟 ${randomSeconds} 秒`);
+            await new Promise(resolve => setTimeout(resolve, randomSeconds * 1000));
+        }
     }
     /**
      * 执行每日任务
@@ -20,6 +32,11 @@ class TaskScheduler {
         try {
             schedulerLogger.info('');
             schedulerLogger.info('────「开始执行」────');
+            // 全局启动延迟
+            const startupDelay = this.configManager.getStartupDelay();
+            if (startupDelay > 0) {
+                await this.delay(startupDelay);
+            }
             // 1. 执行登录任务
             const loginTask = new LoginTask();
             const loginResult = await this.executeTask('登录验证', () => loginTask.execute());
@@ -29,7 +46,9 @@ class TaskScheduler {
             }
             this.userInfo = loginTask.getUserInfo();
             // 2. 执行投币任务
-            if (this.config.function.addCoins) {
+            if (this.configManager.isTaskEnabled('coin')) {
+                const taskDelay = this.configManager.getTaskDelay('coin');
+                await this.delay(taskDelay);
                 const addCoinsTask = new AddCoinsTask(this.config.coin);
                 const coinResult = await this.executeTask('投币任务', () => addCoinsTask.execute());
                 results.push(coinResult);
@@ -38,8 +57,10 @@ class TaskScheduler {
                 schedulerLogger.info('投币任务已禁用，跳过执行');
             }
             // 3. 执行分享观看任务
-            if (this.config.function.shareAndWatch) {
-                const shareWatchTask = new ShareAndWatchTask(this.config.function);
+            if (this.configManager.isTaskEnabled('shareAndWatch')) {
+                const taskDelay = this.configManager.getTaskDelay('shareAndWatch');
+                await this.delay(taskDelay);
+                const shareWatchTask = new ShareAndWatchTask(this.config.shareAndWatch);
                 const shareResult = await this.executeTask('分享观看任务', () => shareWatchTask.execute());
                 results.push(shareResult);
             }
@@ -47,8 +68,10 @@ class TaskScheduler {
                 schedulerLogger.info('分享观看任务已禁用，跳过执行');
             }
             // 4. 执行观看视频任务
-            if (this.config.function.watchVideo) {
-                const watchVideoTask = new WatchVideoTask(this.config.function);
+            if (this.configManager.isTaskEnabled('watchVideo')) {
+                const taskDelay = this.configManager.getTaskDelay('watchVideo');
+                await this.delay(taskDelay);
+                const watchVideoTask = new WatchVideoTask(this.config.watchVideo);
                 const watchResult = await this.executeTask('观看视频任务', () => watchVideoTask.execute());
                 results.push(watchResult);
             }
@@ -120,9 +143,9 @@ class TaskScheduler {
                 return false;
             }
             // 检查是否有启用的任务
-            const hasEnabledTasks = this.config.function.addCoins ||
-                this.config.function.shareAndWatch ||
-                this.config.function.watchVideo;
+            const hasEnabledTasks = this.configManager.isTaskEnabled('coin') ||
+                this.configManager.isTaskEnabled('shareAndWatch') ||
+                this.configManager.isTaskEnabled('watchVideo');
             if (!hasEnabledTasks) {
                 schedulerLogger.warn('所有任务都已禁用');
                 return false;

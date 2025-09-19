@@ -1,9 +1,9 @@
 import type { TaskResult } from '../types/user.js';
-import type { FunctionConfig } from '../types/config.js';
+import type { WatchVideoTaskConfig } from '../types/config.js';
 declare class WatchVideoTask {
     private httpClient;
     private config;
-    constructor(config: FunctionConfig);
+    constructor(config: WatchVideoTaskConfig);
     /**
      * 执行观看视频任务
      */

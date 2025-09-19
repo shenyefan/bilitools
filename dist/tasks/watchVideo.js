@@ -22,8 +22,10 @@ class WatchVideoTask {
                 const watchResult = await this.watchSingleVideo(video);
                 results.push(watchResult);
                 // 观看间隔
-                if (i < targetCount - 1) {
-                    await this.delay(5000); // 5秒间隔
+                if (i < targetCount - 1 && this.config.delay > 0) {
+                    const randomDelay = Math.floor(Math.random() * this.config.delay * 1000);
+                    watchLogger.debug(`等待 ${randomDelay}ms 后观看下一个视频`);
+                    await this.delay(randomDelay);
                 }
             }
             const successCount = results.filter(r => r.success).length;

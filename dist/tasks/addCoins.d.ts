@@ -1,9 +1,9 @@
 import type { TaskResult } from '../types/user.js';
-import type { CoinConfig } from '../types/config.js';
+import type { CoinTaskConfig } from '../types/config.js';
 declare class AddCoinsTask {
     private httpClient;
     private config;
-    constructor(config: CoinConfig);
+    constructor(config: CoinTaskConfig);
     /**
      * 执行投币任务
      */

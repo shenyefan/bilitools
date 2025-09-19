@@ -113,7 +113,8 @@ class HttpClient {
    */
   private async delay(): Promise<void> {
     if (this.config.delay > 0) {
-      await new Promise(resolve => setTimeout(resolve, this.config.delay));
+      const randomDelay = Math.floor(Math.random() * this.config.delay * 1000);
+      await new Promise(resolve => setTimeout(resolve, randomDelay));
     }
   }
 

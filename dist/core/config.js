@@ -55,19 +55,20 @@ class ConfigManager {
         if (!config.coin) {
             throw new Error('配置文件中缺少 coin 字段');
         }
-        if (!config.function) {
-            throw new Error('配置文件中缺少 function 字段');
+        if (!config.shareAndWatch) {
+            throw new Error('配置文件中缺少 shareAndWatch 字段');
+        }
+        if (!config.watchVideo) {
+            throw new Error('配置文件中缺少 watchVideo 字段');
+        }
+        if (!config.global) {
+            throw new Error('配置文件中缺少 global 字段');
         }
         if (!config.network) {
             throw new Error('配置文件中缺少 network 字段');
         }
         if (!config.log) {
             throw new Error('配置文件中缺少 log 字段');
-        }
-        // 验证日志级别
-        const validLogLevels = ['debug', 'info', 'warn', 'error'];
-        if (!validLogLevels.includes(config.log.level)) {
-            throw new Error(`配置文件中 log.level 字段无效，必须是: ${validLogLevels.join(', ')}`);
         }
     }
     /**
@@ -78,11 +79,25 @@ class ConfigManager {
         return config.userAgent || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
     }
     /**
-     * 检查功能是否启用
+     * 检查任务是否启用
      */
-    isFunctionEnabled(functionName) {
+    isTaskEnabled(taskName) {
         const config = this.getConfig();
-        return config.function[functionName] || false;
+        return config[taskName].enabled || false;
+    }
+    /**
+     * 获取任务延迟时间
+     */
+    getTaskDelay(taskName) {
+        const config = this.getConfig();
+        return config[taskName].delay || 0;
+    }
+    /**
+     * 获取全局启动延迟时间
+     */
+    getStartupDelay() {
+        const config = this.getConfig();
+        return config.global.startupDelay || 0;
     }
     /**
      * 更新Cookie并保存到配置文件

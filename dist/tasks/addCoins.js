@@ -36,8 +36,9 @@ class AddCoinsTask {
                 }
                 // 投币间隔
                 if (this.config.delay > 0) {
-                    coinsLogger.debug(`等待 ${this.config.delay}ms 后继续下一个视频`);
-                    await this.delay(this.config.delay);
+                    const randomDelay = Math.floor(Math.random() * this.config.delay * 1000);
+                    coinsLogger.debug(`等待 ${randomDelay}ms 后继续投币`);
+                    await this.delay(randomDelay);
                 }
             }
             const successCount = results.filter(r => r.success).length;
@@ -107,7 +108,7 @@ class AddCoinsTask {
             coinsLogger.debug(`投币参数: aid=${video.aid}, multiply=${this.config.coinsPerVideo}, csrf=${csrf ? '已获取' : '未获取'}`);
             const response = await this.httpClient.postForm('https://api.bilibili.com/x/web-interface/coin/add', coinParams);
             if (response.code === 0) {
-                coinsLogger.info(`投币成功: ${video.title}, 投币数量: ${this.config.coinsPerVideo}`);
+                coinsLogger.info(`投币成功 (${this.config.coinsPerVideo}个)`);
                 return {
                     aid: video.aid,
                     bvid: video.bvid,
@@ -118,7 +119,7 @@ class AddCoinsTask {
                 };
             }
             else {
-                coinsLogger.error(`投币失败: ${video.title} - ${response.message}`);
+                coinsLogger.error(`投币失败 - ${response.message}`);
                 return {
                     aid: video.aid,
                     bvid: video.bvid,

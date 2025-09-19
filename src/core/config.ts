@@ -70,8 +70,16 @@ class ConfigManager {
       throw new Error('配置文件中缺少 coin 字段');
     }
 
-    if (!config.function) {
-      throw new Error('配置文件中缺少 function 字段');
+    if (!config.shareAndWatch) {
+      throw new Error('配置文件中缺少 shareAndWatch 字段');
+    }
+
+    if (!config.watchVideo) {
+      throw new Error('配置文件中缺少 watchVideo 字段');
+    }
+
+    if (!config.global) {
+      throw new Error('配置文件中缺少 global 字段');
     }
 
     if (!config.network) {
@@ -80,12 +88,6 @@ class ConfigManager {
 
     if (!config.log) {
       throw new Error('配置文件中缺少 log 字段');
-    }
-
-    // 验证日志级别
-    const validLogLevels = ['debug', 'info', 'warn', 'error'];
-    if (!validLogLevels.includes(config.log.level)) {
-      throw new Error(`配置文件中 log.level 字段无效，必须是: ${validLogLevels.join(', ')}`);
     }
   }
 
@@ -98,11 +100,27 @@ class ConfigManager {
   }
 
   /**
-   * 检查功能是否启用
+   * 检查任务是否启用
    */
-  public isFunctionEnabled(functionName: keyof Config['function']): boolean {
+  public isTaskEnabled(taskName: 'coin' | 'shareAndWatch' | 'watchVideo'): boolean {
     const config = this.getConfig();
-    return config.function[functionName] || false;
+    return config[taskName].enabled || false;
+  }
+
+  /**
+   * 获取任务延迟时间
+   */
+  public getTaskDelay(taskName: 'coin' | 'shareAndWatch' | 'watchVideo'): number {
+    const config = this.getConfig();
+    return config[taskName].delay || 0;
+  }
+
+  /**
+   * 获取全局启动延迟时间
+   */
+  public getStartupDelay(): number {
+    const config = this.getConfig();
+    return config.global.startupDelay || 0;
   }
 
   /**

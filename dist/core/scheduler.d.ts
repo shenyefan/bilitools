@@ -8,8 +8,13 @@ interface SchedulerResult {
 }
 declare class TaskScheduler {
     private config;
+    private configManager;
     private userInfo;
     constructor();
+    /**
+     * 延迟执行（随机延迟）
+     */
+    private delay;
     /**
      * 执行每日任务
      */

@@ -24,9 +24,17 @@ declare class ConfigManager {
      */
     getUserAgent(): string;
     /**
-     * 检查功能是否启用
+     * 检查任务是否启用
      */
-    isFunctionEnabled(functionName: keyof Config['function']): boolean;
+    isTaskEnabled(taskName: 'coin' | 'shareAndWatch' | 'watchVideo'): boolean;
+    /**
+     * 获取任务延迟时间
+     */
+    getTaskDelay(taskName: 'coin' | 'shareAndWatch' | 'watchVideo'): number;
+    /**
+     * 获取全局启动延迟时间
+     */
+    getStartupDelay(): number;
     /**
      * 更新Cookie并保存到配置文件
      */

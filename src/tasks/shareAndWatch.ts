@@ -1,6 +1,6 @@
 import { getHttpClient } from '../core/http.js';
 import type { TaskResult, ApiResponse } from '../types/user.js';
-import type { FunctionConfig } from '../types/config.js';
+import type { ShareAndWatchTaskConfig } from '../types/config.js';
 import { shareLogger } from '../core/logger.js';
 
 interface VideoInfo {
@@ -25,9 +25,9 @@ interface ShareResponse {
 
 class ShareAndWatchTask {
   private httpClient = getHttpClient();
-  private config: FunctionConfig;
+  private config: ShareAndWatchTaskConfig;
 
-  constructor(config: FunctionConfig) {
+  constructor(config: ShareAndWatchTaskConfig) {
     this.config = config;
   }
 
@@ -45,12 +45,19 @@ class ShareAndWatchTask {
       // 执行分享任务
       const shareResult = await this.shareVideo(video);
       
+      // 分享和观看之间的延迟间隔
+      if (this.config.delay > 0) {
+        const randomDelay = Math.floor(Math.random() * this.config.delay * 1000);
+        shareLogger.debug(`等待 ${randomDelay}ms 后开始观看视频`);
+        await this.delay(randomDelay);
+      }
+      
       // 执行观看任务
       const watchResult = await this.watchVideo(video);
 
       const success = shareResult && watchResult;
       const message = success 
-        ? `分享观看任务完成: ${video.title}`
+        ? `分享观看任务完成`
         : '分享观看任务部分失败';
       
       if (success) {
@@ -193,14 +200,14 @@ class ShareAndWatchTask {
       );
 
       if (response.code === 0) {
-        shareLogger.info(`视频观看完成: ${video.title}`);
+        shareLogger.info(`视频观看完成`);
         return true;
       } else {
-        shareLogger.warn(`视频观看上报失败: ${video.title} - ${response.message}`);
+        shareLogger.warn(`视频观看上报失败 - ${response.message}`);
         return false;
       }
     } catch (error) {
-      shareLogger.error(`视频观看异常: ${video.title}`, error);
+      shareLogger.error(`视频观看异常`, error);
       return false;
     }
   }

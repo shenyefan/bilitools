@@ -1,12 +1,38 @@
 export interface Config {
   cookie: string;
   userAgent?: string;
-  coin: CoinConfig;
-  function: FunctionConfig;
-  limit: LimitConfig;
+  coin: CoinTaskConfig;
+  shareAndWatch: ShareAndWatchTaskConfig;
+  watchVideo: WatchVideoTaskConfig;
+  global: GlobalTaskConfig;
   log: LogConfig;
   network: NetworkConfig;
   notification?: NotificationConfig;
+}
+
+export interface GlobalTaskConfig {
+  startupDelay: number;
+}
+
+export interface CoinTaskConfig {
+  enabled: boolean;
+  targetCoins: number;
+  targetLevel: number;
+  stayCoins: number;
+  retryNum: number;
+  coinsPerVideo: number;
+  selectLike: boolean;
+  delay: number;
+}
+
+export interface ShareAndWatchTaskConfig {
+  enabled: boolean;
+  delay: number;
+}
+
+export interface WatchVideoTaskConfig {
+  enabled: boolean;
+  delay: number;
 }
 
 export interface NotificationConfig {
@@ -22,32 +48,11 @@ export interface WechatWorkNotificationConfig {
   baseUrl?: string;
 }
 
-export interface CoinConfig {
-  targetCoins: number;
-  targetLevel: number;
-  stayCoins: number;
-  retryNum: number;
-  coinsPerVideo: number;
-  selectLike: boolean;
-  delay: number;
-}
-
-export interface FunctionConfig {
-  addCoins: boolean;
-  shareAndWatch: boolean;
-  watchVideo: boolean;
-}
-
-export interface LimitConfig {
-  level6: boolean;
-  coins5: boolean;
-}
-
-export interface LogConfig {  level: 'debug' | 'info' | 'warn' | 'error';
-}
-
 export interface NetworkConfig {
   timeout: number;
   retries: number;
   delay: number;
+}
+
+export interface LogConfig {  level: 'debug' | 'info' | 'warn' | 'error';
 }

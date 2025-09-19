@@ -1,9 +1,9 @@
 import type { TaskResult } from '../types/user.js';
-import type { FunctionConfig } from '../types/config.js';
+import type { ShareAndWatchTaskConfig } from '../types/config.js';
 declare class ShareAndWatchTask {
     private httpClient;
     private config;
-    constructor(config: FunctionConfig);
+    constructor(config: ShareAndWatchTaskConfig);
     /**
      * 执行分享观看任务
      */
