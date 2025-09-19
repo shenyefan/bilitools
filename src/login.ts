@@ -27,15 +27,15 @@ async function checkLoginStatus() {
     // 加载配置
     let config;
     try {
-      config = loadConfig(process.env.CONFIG_PATH);
+      config = loadConfig();
     } catch (configError) {
       // 如果是配置文件不存在的错误，生成默认配置后重新加载
       const errorMessage = configError instanceof Error ? configError.message : '未知错误';
       if (errorMessage.includes('配置文件不存在')) {
         mainLogger.warn('配置文件不存在，正在生成默认配置文件...');
-        generateDefaultConfig(process.env.CONFIG_PATH);
+        generateDefaultConfig();
         // 重新尝试加载配置
-        config = loadConfig(process.env.CONFIG_PATH);
+        config = loadConfig();
       } else {
         throw configError;
       }

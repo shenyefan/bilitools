@@ -21,7 +21,7 @@ async function runDailyTasks() {
         // 加载配置
         let config;
         try {
-            config = loadConfig(process.env.CONFIG_PATH);
+            config = loadConfig();
         }
         catch (configError) {
             const errorMessage = configError instanceof Error ? configError.message : '未知错误';
