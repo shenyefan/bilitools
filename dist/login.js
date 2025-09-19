@@ -19,11 +19,8 @@ const $ = new Env('哔哩哔哩 - 登录');
  */
 async function checkLoginStatus() {
     try {
-        // 获取配置文件路径，支持环境变量或默认路径
-        const configPath = process.env.CONFIG_PATH || 'config.json5';
-        mainLogger.debug(`配置文件路径: ${configPath}`);
         // 加载配置
-        const config = await loadConfig(configPath);
+        const config = loadConfig(process.env.CONFIG_PATH);
         // 初始化HTTP客户端
         initHttpClient(config);
         // 执行登录检查
