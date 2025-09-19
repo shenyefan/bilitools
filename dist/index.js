@@ -10,14 +10,10 @@ import fs from 'fs';
 import { mainLogger } from './core/logger.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// 读取package.json获取版本信息
-const packageJsonPath = path.join(__dirname, '../package.json');
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
 const program = new Command();
 program
     .name('biliTools')
-    .description('哔哩哔哩(bilibili)自动化工具')
-    .version(packageJson.version);
+    .description('哔哩哔哩(bilibili)自动化工具');
 // 主命令：执行每日任务
 program
     .command('run')
