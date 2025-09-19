@@ -12,7 +12,23 @@ class ConfigManager {
   private configPath: string;
 
   constructor(configPath?: string) {
-    this.configPath = configPath || resolve(process.cwd(), 'config.json5');
+    if (configPath) {
+      this.configPath = configPath;
+    } else {
+      // 按优先级查找配置文件
+      const possiblePaths = [
+        resolve(process.cwd(), 'config.json5'),
+        resolve(process.cwd(), 'dist/config.json5')
+      ];
+      
+      this.configPath = possiblePaths.find(path => {
+        try {
+          return existsSync(path);
+        } catch {
+          return false;
+        }
+      }) || possiblePaths[0]; // 如果都不存在，使用第一个路径
+    }
   }
 
   /**
