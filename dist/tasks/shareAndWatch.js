@@ -12,7 +12,7 @@ class ShareAndWatchTask {
     async execute() {
         try {
             shareLogger.info('');
-            shareLogger.info('coinsLogger.info("────────「分享视频」────────");');
+            shareLogger.info('────「分享视频」────');
             // 获取推荐视频
             const video = await this.getRecommendVideo();
             // 执行分享任务

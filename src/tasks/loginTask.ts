@@ -30,7 +30,7 @@ class LoginTask {
   public async execute(): Promise<TaskResult> {
     try {
       loginLogger.info('');
-      loginLogger.info('coinsLogger.info("────────「开始登录」────────");');
+      loginLogger.info('────「登录任务」────');
       
       // 获取用户导航信息
       const navInfo = await this.getNavInfo();

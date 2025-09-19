@@ -42,7 +42,7 @@ class WatchVideoTask {
   public async execute(): Promise<TaskResult> {
     try {
       watchLogger.info('');
-      watchLogger.info('coinsLogger.info("────────「观看视频」────────");');
+      watchLogger.info('────「观看视频」────');
       
       const results: WatchResult[] = [];
       const targetCount = 3; // 观看3个视频

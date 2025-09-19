@@ -33,7 +33,7 @@ class TaskScheduler {
 
     try {
       schedulerLogger.info('');
-      schedulerLogger.info('coinsLogger.info("────────「开始执行」────────");');
+      schedulerLogger.info('────「开始执行」────');
       
       // 1. 执行登录任务
       const loginTask = new LoginTask();

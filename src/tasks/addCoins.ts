@@ -40,7 +40,7 @@ class AddCoinsTask {
   public async execute(): Promise<TaskResult> {
     try {
       coinsLogger.info('');
-      coinsLogger.info('coinsLogger.info("────────「投币任务」────────");');
+      coinsLogger.info('────「投币任务」────');
       coinsLogger.debug(`投币配置: targetCoins=${this.config.targetCoins}, coinsPerVideo=${this.config.coinsPerVideo}`);
       
       const results: CoinResult[] = [];

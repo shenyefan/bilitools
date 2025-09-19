@@ -12,7 +12,7 @@ class WatchVideoTask {
     async execute() {
         try {
             watchLogger.info('');
-            watchLogger.info('coinsLogger.info("────────「观看视频」────────");');
+            watchLogger.info('────「观看视频」────');
             const results = [];
             const targetCount = 3; // 观看3个视频
             // 获取推荐视频列表

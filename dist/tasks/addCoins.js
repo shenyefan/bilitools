@@ -12,7 +12,7 @@ class AddCoinsTask {
     async execute() {
         try {
             coinsLogger.info('');
-            coinsLogger.info('coinsLogger.info("────────「投币任务」────────");');
+            coinsLogger.info('────「投币任务」────');
             coinsLogger.debug(`投币配置: targetCoins=${this.config.targetCoins}, coinsPerVideo=${this.config.coinsPerVideo}`);
             const results = [];
             let totalCoins = 0;
