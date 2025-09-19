@@ -1,0 +1,49 @@
+{
+  // 用户配置
+  "cookie": "your_bilibili_cookie_here",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  
+  // 投币配置
+  "coin": {
+    "enabled": true,
+    "targetCoins": 2,        // 每日目标投币数
+    "targetLevel": 6,        // 目标等级
+    "stayCoins": 0,
+    "retryNum": 3,
+    "coinsPerVideo": 1,
+    "selectLike": true,
+    "delay": 1000
+  },
+  
+  // 功能开关
+  "function": {
+    "addCoins": true,        // 是否启用投币
+    "shareAndWatch": true,   // 是否启用分享观看
+    "watchVideo": true       // 是否启用视频观看
+  },
+  
+  // 限制配置
+  "limit": {
+    "level6": true,          // 6级后是否停止部分功能
+    "coins5": true          // 是否限制最多5币
+  },
+  
+  // 通知配置
+  "notification": {
+    "wechatWork": {
+      "enabled": false,      // 是否启用企业微信通知
+      "corpid": "",          // 企业ID
+      "corpsecret": "",      // 应用Secret
+      "agentid": 0,          // 应用ID
+      "touser": "@all",       // 接收者，@all表示全部
+      "baseUrl": "https://qyapi.weixin.qq.com"
+    }
+  },
+  
+  // 网络配置
+  "network": {
+    "timeout": 10000,        // 请求超时时间
+    "retries": 3,            // 重试次数
+    "delay": 1000            // 请求间隔
+  }
+}
