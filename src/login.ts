@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { loadConfig } from './core/config.js';
+import { loadConfig, ConfigManager } from './core/config.js';
 import { LoginTask } from './tasks/loginTask.js';
 import { initHttpClient } from './core/http.js';
 import { mainLogger } from './core/logger.js';
@@ -157,8 +157,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 /**
  * 生成默认配置文件
  */
-function generateDefaultConfig(configPath?: string): void {
-  const defaultConfigPath = configPath || resolve(process.cwd(), 'config.json5');
+function generateDefaultConfig(): void {
+  // 使用ConfigManager的路径查找逻辑
+  const configManager = new ConfigManager();
+  const defaultConfigPath = configManager.getConfigPath();
   
   const defaultConfig: Config = {
     cookie: "your_bilibili_cookie_here",

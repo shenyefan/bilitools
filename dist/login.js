@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-import { loadConfig } from './core/config.js';
+import { loadConfig, ConfigManager } from './core/config.js';
 import { LoginTask } from './tasks/loginTask.js';
 import { initHttpClient } from './core/http.js';
 import { mainLogger } from './core/logger.js';
 import { pcLogin } from './core/auth/pc-login.js';
 import { fileURLToPath } from 'url';
 import { writeFileSync } from 'fs';
-import { resolve } from 'path';
 import JSON5 from 'json5';
 // 兼容青龙面板环境
 class Env {
@@ -143,8 +142,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 /**
  * 生成默认配置文件
  */
-function generateDefaultConfig(configPath) {
-    const defaultConfigPath = configPath || resolve(process.cwd(), 'config.json5');
+function generateDefaultConfig() {
+    // 使用ConfigManager的路径查找逻辑
+    const configManager = new ConfigManager();
+    const defaultConfigPath = configManager.getConfigPath();
     const defaultConfig = {
         cookie: "your_bilibili_cookie_here",
         userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",

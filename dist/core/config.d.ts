@@ -2,7 +2,7 @@ import type { Config } from '../types/config.js';
 declare class ConfigManager {
     private config;
     private configPath;
-    constructor(configPath?: string);
+    constructor();
     /**
      * 加载配置文件
      */
@@ -15,6 +15,10 @@ declare class ConfigManager {
      * 重新加载配置
      */
     reloadConfig(): Config;
+    /**
+     * 获取配置文件路径
+     */
+    getConfigPath(): string;
     /**
      * 验证配置文件
      */
@@ -40,7 +44,7 @@ declare class ConfigManager {
      */
     updateCookie(cookie: string): void;
 }
-export declare const initConfig: (configPath?: string) => Config;
+export declare const initConfig: () => Config;
 export declare const getConfig: () => Config;
-export declare const loadConfig: (configPath?: string) => Config;
+export declare const loadConfig: () => Config;
 export { ConfigManager };

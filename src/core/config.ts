@@ -11,23 +11,15 @@ class ConfigManager {
   private config: Config | null = null;
   private configPath: string;
 
-  constructor(configPath?: string) {
-    if (configPath) {
-      this.configPath = configPath;
+  constructor() {
+    // 优先查找根目录的config.json5，如果不存在则使用dist目录下的
+    const rootConfigPath = resolve(process.cwd(), 'config.json5');
+    const distConfigPath = resolve(process.cwd(), 'dist', 'config.json5');
+    
+    if (existsSync(rootConfigPath)) {
+      this.configPath = rootConfigPath;
     } else {
-      // 按优先级查找配置文件
-      const possiblePaths = [
-        resolve(process.cwd(), 'config.json5'),
-        resolve(process.cwd(), 'dist/config.json5')
-      ];
-      
-      this.configPath = possiblePaths.find(path => {
-        try {
-          return existsSync(path);
-        } catch {
-          return false;
-        }
-      }) || possiblePaths[0]; // 如果都不存在，使用第一个路径
+      this.configPath = distConfigPath;
     }
   }
 
@@ -72,6 +64,13 @@ class ConfigManager {
   public reloadConfig(): Config {
     this.config = null;
     return this.loadConfig();
+  }
+
+  /**
+   * 获取配置文件路径
+   */
+  public getConfigPath(): string {
+    return this.configPath;
   }
 
   /**
@@ -165,14 +164,8 @@ class ConfigManager {
 
 const configManager = new ConfigManager();
 
-export const initConfig = (configPath?: string) => configManager.loadConfig();
+export const initConfig = () => configManager.loadConfig();
 export const getConfig = () => configManager.getConfig();
-export const loadConfig = (configPath?: string) => {
-  if (configPath) {
-    const newManager = new ConfigManager(configPath);
-    return newManager.loadConfig();
-  }
-  return configManager.loadConfig();
-};
+export const loadConfig = () => configManager.loadConfig();
 
 export { ConfigManager };
