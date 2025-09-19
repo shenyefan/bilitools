@@ -3,7 +3,7 @@ import { loadConfig, ConfigManager } from './core/config.js';
 import { LoginTask } from './tasks/loginTask.js';
 import { initHttpClient } from './core/http.js';
 import { mainLogger } from './core/logger.js';
-import { pcLogin } from './core/auth/pc-login.js';
+import { pcLogin } from './core/auth/login.js';
 import { fileURLToPath } from 'url';
 import { writeFileSync } from 'fs';
 import JSON5 from 'json5';
@@ -69,50 +69,40 @@ async function checkLoginStatus() {
             // 启动扫码登录流程
             mainLogger.info('检测到未登录，正在启动扫码登录...');
             try {
-                const loginData = await pcLogin();
-                if (loginData) {
-                    mainLogger.info('扫码登录成功！');
-                    mainLogger.info(`用户ID: ${loginData.mid}`);
-                    // 重新初始化HTTP客户端以使用新的cookie
-                    initHttpClient(config);
-                    // 重新执行登录检查
-                    const newLoginTask = new LoginTask();
-                    const newResult = await newLoginTask.execute();
-                    if (newResult.success) {
-                        const newUserInfo = newLoginTask.getUserInfo();
-                        mainLogger.info('登录验证成功！');
-                        if (newUserInfo) {
-                            mainLogger.info(`用户名: ${newUserInfo.username}`);
-                            mainLogger.info(`等级: ${newUserInfo.level}`);
-                            mainLogger.info(`硬币: ${newUserInfo.coins}`);
-                            mainLogger.info(`VIP状态: ${newUserInfo.vipStatus === 1 ? '是' : '否'}`);
-                            // 输出JSON格式的用户信息
-                            console.log('USER_INFO:', JSON.stringify({
-                                username: newUserInfo.username,
-                                level: newUserInfo.level,
-                                coins: newUserInfo.coins,
-                                vipStatus: newUserInfo.vipStatus,
-                                loginStatus: 'success',
-                                loginMethod: 'qrcode'
-                            }));
-                        }
-                        process.exit(0);
-                    }
-                    else {
-                        mainLogger.error('登录验证失败:', newResult.message);
+                await pcLogin();
+                mainLogger.info('扫码登录流程完成');
+                // 重新加载配置以获取更新后的cookie
+                config = loadConfig();
+                // 重新初始化HTTP客户端以使用新的cookie
+                initHttpClient(config);
+                // 重新执行登录检查
+                const newLoginTask = new LoginTask();
+                const newResult = await newLoginTask.execute();
+                if (newResult.success) {
+                    const newUserInfo = newLoginTask.getUserInfo();
+                    mainLogger.info('登录验证成功！');
+                    if (newUserInfo) {
+                        mainLogger.info(`用户名: ${newUserInfo.username}`);
+                        mainLogger.info(`等级: ${newUserInfo.level}`);
+                        mainLogger.info(`硬币: ${newUserInfo.coins}`);
+                        mainLogger.info(`VIP状态: ${newUserInfo.vipStatus === 1 ? '是' : '否'}`);
+                        // 输出JSON格式的用户信息
                         console.log('USER_INFO:', JSON.stringify({
-                            loginStatus: 'failed',
-                            error: '扫码登录后验证失败: ' + newResult.message,
+                            username: newUserInfo.username,
+                            level: newUserInfo.level,
+                            coins: newUserInfo.coins,
+                            vipStatus: newUserInfo.vipStatus,
+                            loginStatus: 'success',
                             loginMethod: 'qrcode'
                         }));
-                        process.exit(1);
                     }
+                    process.exit(0);
                 }
                 else {
-                    mainLogger.error('扫码登录失败或被取消');
+                    mainLogger.error('登录验证失败:', newResult.message);
                     console.log('USER_INFO:', JSON.stringify({
                         loginStatus: 'failed',
-                        error: '扫码登录失败或被取消',
+                        error: '扫码登录后验证失败: ' + newResult.message,
                         loginMethod: 'qrcode'
                     }));
                     process.exit(1);
@@ -193,7 +183,6 @@ function generateDefaultConfig() {
         // 写入默认配置文件
         writeFileSync(defaultConfigPath, JSON5.stringify(defaultConfig, null, 2), 'utf-8');
         mainLogger.info(`默认配置文件已生成: ${defaultConfigPath}`);
-        mainLogger.warn('请修改配置文件中的cookie等必要信息后重新启动程序');
     }
     catch (error) {
         throw new Error(`生成默认配置文件失败: ${error}`);

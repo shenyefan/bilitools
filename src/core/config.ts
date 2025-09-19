@@ -5,8 +5,6 @@ import JSON5 from 'json5';
 import type { Config } from '../types/config.js';
 import { configLogger } from './logger.js';
 
-
-
 class ConfigManager {
   private config: Config | null = null;
   private configPath: string;

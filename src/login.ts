@@ -4,7 +4,7 @@ import { loadConfig, ConfigManager } from './core/config.js';
 import { LoginTask } from './tasks/loginTask.js';
 import { initHttpClient } from './core/http.js';
 import { mainLogger } from './core/logger.js';
-import { pcLogin } from './core/auth/pc-login.js';
+import { pcLogin } from './core/auth/login.js';
 import { fileURLToPath } from 'url';
 import { writeFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
@@ -77,14 +77,15 @@ async function checkLoginStatus() {
       mainLogger.info('检测到未登录，正在启动扫码登录...');
       
       try {
-        const loginData = await pcLogin();
+        await pcLogin();
         
-        if (loginData) {
-          mainLogger.info('扫码登录成功！');
-          mainLogger.info(`用户ID: ${loginData.mid}`);
-          
-          // 重新初始化HTTP客户端以使用新的cookie
-          initHttpClient(config);
+        mainLogger.info('扫码登录流程完成');
+        
+        // 重新加载配置以获取更新后的cookie
+        config = loadConfig();
+        
+        // 重新初始化HTTP客户端以使用新的cookie
+        initHttpClient(config);
           
           // 重新执行登录检查
           const newLoginTask = new LoginTask();
@@ -121,15 +122,6 @@ async function checkLoginStatus() {
             }));
             process.exit(1);
           }
-        } else {
-          mainLogger.error('扫码登录失败或被取消');
-          console.log('USER_INFO:', JSON.stringify({
-            loginStatus: 'failed',
-            error: '扫码登录失败或被取消',
-            loginMethod: 'qrcode'
-          }));
-          process.exit(1);
-        }
       } catch (qrError) {
         const qrErrorMessage = qrError instanceof Error ? qrError.message : '扫码登录过程中发生未知错误';
         mainLogger.error('扫码登录过程中发生错误:', qrErrorMessage);
@@ -210,7 +202,6 @@ function generateDefaultConfig(): void {
     // 写入默认配置文件
     writeFileSync(defaultConfigPath, JSON5.stringify(defaultConfig, null, 2), 'utf-8');
     mainLogger.info(`默认配置文件已生成: ${defaultConfigPath}`);
-    mainLogger.warn('请修改配置文件中的cookie等必要信息后重新启动程序');
   } catch (error) {
     throw new Error(`生成默认配置文件失败: ${error}`);
   }
