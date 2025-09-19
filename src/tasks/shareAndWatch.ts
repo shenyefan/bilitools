@@ -36,17 +36,8 @@ class ShareAndWatchTask {
    */
   public async execute(): Promise<TaskResult> {
     try {
-      shareLogger.info('开始执行分享观看任务...');
-      
-      if (!this.config.shareAndWatch) {
-        shareLogger.info('分享观看任务已禁用');
-        return {
-          taskType: 'shareAndWatch',
-          success: true,
-          message: '分享观看任务已禁用',
-          timestamp: Date.now()
-        };
-      }
+      shareLogger.info('');
+      shareLogger.info('coinsLogger.info("────────「分享视频」────────");');
 
       // 获取推荐视频
       const video = await this.getRecommendVideo();

@@ -51,7 +51,7 @@ export async function sendWechatWorkNotification(title, content) {
         }
         const accessToken = tokenResponse.data.access_token;
         // 构建完整的消息内容：标题 + 换行 + 日志内容
-        const fullContent = messageContent ? `${title}\n\n${messageContent}` : title;
+        const fullContent = messageContent ? `${title}\n${messageContent}` : title;
         // 发送消息
         const messageResponse = await axios.post(`${baseUrl}/cgi-bin/message/send?access_token=${accessToken}`, {
             touser: wechatConfig.touser,

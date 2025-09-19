@@ -23,7 +23,6 @@ export interface WechatWorkNotificationConfig {
 }
 
 export interface CoinConfig {
-  enabled: boolean;
   targetCoins: number;
   targetLevel: number;
   stayCoins: number;
@@ -44,10 +43,7 @@ export interface LimitConfig {
   coins5: boolean;
 }
 
-export interface LogConfig {
-  level: 'debug' | 'info' | 'warn' | 'error';
-  file?: string;
-  console: boolean;
+export interface LogConfig {  level: 'debug' | 'info' | 'warn' | 'error';
 }
 
 export interface NetworkConfig {

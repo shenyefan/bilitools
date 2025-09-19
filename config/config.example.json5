@@ -5,7 +5,6 @@
   
   // 投币配置
   "coin": {
-    "enabled": true,
     "targetCoins": 2,        // 每日目标投币数
     "targetLevel": 6,        // 目标等级
     "stayCoins": 0,
@@ -26,6 +25,11 @@
   "limit": {
     "level6": true,          // 6级后是否停止部分功能
     "coins5": true          // 是否限制最多5币
+  },
+  
+  // 日志配置
+  "log": {
+    "level": "info"          // 日志级别: debug, info, warn, error
   },
   
   // 通知配置

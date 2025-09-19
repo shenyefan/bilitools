@@ -53,13 +53,21 @@ class ConfigManager {
             throw new Error('配置文件中缺少 cookie 字段');
         }
         if (!config.coin) {
-            throw new Error('配置文件中 coin.targetCoins 字段无效');
+            throw new Error('配置文件中缺少 coin 字段');
         }
         if (!config.function) {
             throw new Error('配置文件中缺少 function 字段');
         }
         if (!config.network) {
             throw new Error('配置文件中缺少 network 字段');
+        }
+        if (!config.log) {
+            throw new Error('配置文件中缺少 log 字段');
+        }
+        // 验证日志级别
+        const validLogLevels = ['debug', 'info', 'warn', 'error'];
+        if (!validLogLevels.includes(config.log.level)) {
+            throw new Error(`配置文件中 log.level 字段无效，必须是: ${validLogLevels.join(', ')}`);
         }
     }
     /**

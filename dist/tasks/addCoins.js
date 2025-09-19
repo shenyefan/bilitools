@@ -11,17 +11,9 @@ class AddCoinsTask {
      */
     async execute() {
         try {
-            coinsLogger.info('开始执行投币任务...');
-            coinsLogger.debug(`投币配置: targetCoins=${this.config.targetCoins}, coinsPerVideo=${this.config.coinsPerVideo}, enabled=${this.config.enabled}`);
-            if (!this.config.enabled) {
-                coinsLogger.info('投币任务已禁用');
-                return {
-                    taskType: 'addCoins',
-                    success: true,
-                    message: '投币任务已禁用',
-                    timestamp: Date.now()
-                };
-            }
+            coinsLogger.info('');
+            coinsLogger.info('coinsLogger.info("────────「投币任务」────────");');
+            coinsLogger.debug(`投币配置: targetCoins=${this.config.targetCoins}, coinsPerVideo=${this.config.coinsPerVideo}`);
             const results = [];
             let totalCoins = 0;
             // 获取热门视频列表

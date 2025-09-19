@@ -8,7 +8,8 @@ class LoginTask {
      */
     async execute() {
         try {
-            loginLogger.info('开始执行登录任务...');
+            loginLogger.info('');
+            loginLogger.info('coinsLogger.info("────────「开始登录」────────");');
             // 获取用户导航信息
             const navInfo = await this.getNavInfo();
             if (!navInfo.isLogin) {
@@ -26,7 +27,7 @@ class LoginTask {
                 vipStatus: navInfo.vipStatus,
                 isLogin: true
             };
-            loginLogger.info(`登录成功！用户: ${this.userInfo.username}, 等级: ${this.userInfo.level}, 硬币: ${this.userInfo.coins}`);
+            loginLogger.info(`登录成功！欢迎 ${this.userInfo.username}(Lv.${this.userInfo.level}), 硬币: ${this.userInfo.coins}`);
             return {
                 taskType: 'loginTask',
                 success: true,

@@ -11,16 +11,8 @@ class WatchVideoTask {
      */
     async execute() {
         try {
-            watchLogger.info('开始执行观看视频任务...');
-            if (!this.config.watchVideo) {
-                watchLogger.info('观看视频任务已禁用');
-                return {
-                    taskType: 'watchVideo',
-                    success: true,
-                    message: '观看视频任务已禁用',
-                    timestamp: Date.now()
-                };
-            }
+            watchLogger.info('');
+            watchLogger.info('coinsLogger.info("────────「观看视频」────────");');
             const results = [];
             const targetCount = 3; // 观看3个视频
             // 获取推荐视频列表

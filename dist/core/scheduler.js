@@ -18,7 +18,8 @@ class TaskScheduler {
         const startTime = Date.now();
         const results = [];
         try {
-            schedulerLogger.info('BiliTools 开始执行');
+            schedulerLogger.info('');
+            schedulerLogger.info('coinsLogger.info("────────「开始执行」────────");');
             // 1. 执行登录任务
             const loginTask = new LoginTask();
             const loginResult = await this.executeTask('登录验证', () => loginTask.execute());
@@ -28,7 +29,7 @@ class TaskScheduler {
             }
             this.userInfo = loginTask.getUserInfo();
             // 2. 执行投币任务
-            if (this.config.coin.enabled) {
+            if (this.config.function.addCoins) {
                 const addCoinsTask = new AddCoinsTask(this.config.coin);
                 const coinResult = await this.executeTask('投币任务', () => addCoinsTask.execute());
                 results.push(coinResult);
@@ -119,7 +120,7 @@ class TaskScheduler {
                 return false;
             }
             // 检查是否有启用的任务
-            const hasEnabledTasks = this.config.coin.enabled ||
+            const hasEnabledTasks = this.config.function.addCoins ||
                 this.config.function.shareAndWatch ||
                 this.config.function.watchVideo;
             if (!hasEnabledTasks) {

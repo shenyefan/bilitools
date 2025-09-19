@@ -20,7 +20,6 @@ export interface WechatWorkNotificationConfig {
     baseUrl?: string;
 }
 export interface CoinConfig {
-    enabled: boolean;
     targetCoins: number;
     targetLevel: number;
     stayCoins: number;
@@ -40,8 +39,6 @@ export interface LimitConfig {
 }
 export interface LogConfig {
     level: 'debug' | 'info' | 'warn' | 'error';
-    file?: string;
-    console: boolean;
 }
 export interface NetworkConfig {
     timeout: number;

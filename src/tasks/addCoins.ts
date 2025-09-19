@@ -39,19 +39,10 @@ class AddCoinsTask {
    */
   public async execute(): Promise<TaskResult> {
     try {
-      coinsLogger.info('开始执行投币任务...');
-      coinsLogger.debug(`投币配置: targetCoins=${this.config.targetCoins}, coinsPerVideo=${this.config.coinsPerVideo}, enabled=${this.config.enabled}`);
+      coinsLogger.info('');
+      coinsLogger.info('coinsLogger.info("────────「投币任务」────────");');
+      coinsLogger.debug(`投币配置: targetCoins=${this.config.targetCoins}, coinsPerVideo=${this.config.coinsPerVideo}`);
       
-      if (!this.config.enabled) {
-        coinsLogger.info('投币任务已禁用');
-        return {
-          taskType: 'addCoins',
-          success: true,
-          message: '投币任务已禁用',
-          timestamp: Date.now()
-        };
-      }
-
       const results: CoinResult[] = [];
       let totalCoins = 0;
 
