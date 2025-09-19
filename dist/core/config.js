@@ -16,8 +16,7 @@ class ConfigManager {
             return this.config;
         }
         if (!existsSync(this.configPath)) {
-            configLogger.warn(`配置文件不存在: ${this.configPath}，正在生成默认配置文件...`);
-            this.generateDefaultConfig();
+            throw new Error(`配置文件不存在: ${this.configPath}`);
         }
         try {
             const configContent = readFileSync(this.configPath, 'utf-8');
@@ -99,63 +98,6 @@ class ConfigManager {
     getStartupDelay() {
         const config = this.getConfig();
         return config.global.startupDelay || 0;
-    }
-    /**
-     * 生成默认配置文件
-     */
-    generateDefaultConfig() {
-        const defaultConfig = {
-            cookie: "your_bilibili_cookie_here",
-            userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            global: {
-                startupDelay: 1800
-            },
-            coin: {
-                enabled: true,
-                targetCoins: 2,
-                targetLevel: 6,
-                stayCoins: 0,
-                retryNum: 3,
-                coinsPerVideo: 1,
-                selectLike: true,
-                delay: 30
-            },
-            shareAndWatch: {
-                enabled: true,
-                delay: 30
-            },
-            watchVideo: {
-                enabled: true,
-                delay: 30
-            },
-            notification: {
-                wechatWork: {
-                    enabled: false,
-                    corpid: "",
-                    corpsecret: "",
-                    agentid: 0,
-                    touser: "@all",
-                    baseUrl: "https://qyapi.weixin.qq.com"
-                }
-            },
-            network: {
-                timeout: 10000,
-                retries: 3,
-                delay: 30
-            },
-            log: {
-                level: "info"
-            }
-        };
-        try {
-            // 写入默认配置文件到根目录
-            writeFileSync(this.configPath, JSON5.stringify(defaultConfig, null, 2), 'utf-8');
-            configLogger.info(`默认配置文件已生成: ${this.configPath}`);
-            configLogger.warn('请修改配置文件中的cookie等必要信息后重新启动程序');
-        }
-        catch (error) {
-            throw new Error(`生成默认配置文件失败: ${error}`);
-        }
     }
     /**
      * 更新Cookie并保存到配置文件

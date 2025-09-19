@@ -6,6 +6,10 @@ import { initHttpClient } from './core/http.js';
 import { mainLogger } from './core/logger.js';
 import { pcLogin } from './core/auth/pc-login.js';
 import { fileURLToPath } from 'url';
+import { writeFileSync, existsSync } from 'fs';
+import { resolve } from 'path';
+import JSON5 from 'json5';
+import type { Config } from './types/config.js';
 
 // 兼容青龙面板环境
 class Env {
@@ -21,7 +25,21 @@ const $ = new Env('哔哩哔哩 - 登录');
 async function checkLoginStatus() {
   try {
     // 加载配置
-    const config = loadConfig(process.env.CONFIG_PATH);
+    let config;
+    try {
+      config = loadConfig(process.env.CONFIG_PATH);
+    } catch (configError) {
+      // 如果是配置文件不存在的错误，生成默认配置后重新加载
+      const errorMessage = configError instanceof Error ? configError.message : '未知错误';
+      if (errorMessage.includes('配置文件不存在')) {
+        mainLogger.warn('配置文件不存在，正在生成默认配置文件...');
+        generateDefaultConfig(process.env.CONFIG_PATH);
+        // 重新尝试加载配置
+        config = loadConfig(process.env.CONFIG_PATH);
+      } else {
+        throw configError;
+      }
+    }
     
     // 初始化HTTP客户端
     initHttpClient(config);
@@ -128,18 +146,72 @@ async function checkLoginStatus() {
     const errorMessage = error instanceof Error ? error.message : '未知错误';
     mainLogger.error('检查登录状态时发生异常:', errorMessage);
     
-    // 输出JSON格式的异常信息
-    console.log('USER_INFO:', JSON.stringify({
-      loginStatus: 'error',
-      error: errorMessage
-    }));
-    
     process.exit(1);
   }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   checkLoginStatus();
+}
+
+/**
+ * 生成默认配置文件
+ */
+function generateDefaultConfig(configPath?: string): void {
+  const defaultConfigPath = configPath || resolve(process.cwd(), 'config.json5');
+  
+  const defaultConfig: Config = {
+    cookie: "your_bilibili_cookie_here",
+    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    global: {
+      startupDelay: 1800
+    },
+    coin: {
+      enabled: true,
+      targetCoins: 2,
+      targetLevel: 6,
+      stayCoins: 0,
+      retryNum: 3,
+      coinsPerVideo: 1,
+      selectLike: true,
+      delay: 30
+    },
+    shareAndWatch: {
+      enabled: true,
+      delay: 30
+    },
+    watchVideo: {
+      enabled: true,
+      delay: 30
+    },
+    notification: {
+      wechatWork: {
+        enabled: false,
+        corpid: "",
+        corpsecret: "",
+        agentid: 0,
+        touser: "@all",
+        baseUrl: "https://qyapi.weixin.qq.com"
+      }
+    },
+    network: {
+      timeout: 10000,
+      retries: 3,
+      delay: 30
+    },
+    log: {
+      level: "info"
+    }
+  };
+
+  try {
+    // 写入默认配置文件
+    writeFileSync(defaultConfigPath, JSON5.stringify(defaultConfig, null, 2), 'utf-8');
+    mainLogger.info(`默认配置文件已生成: ${defaultConfigPath}`);
+    mainLogger.warn('请修改配置文件中的cookie等必要信息后重新启动程序');
+  } catch (error) {
+    throw new Error(`生成默认配置文件失败: ${error}`);
+  }
 }
 
 // 导出函数供其他模块调用

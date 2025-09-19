@@ -20,7 +20,22 @@ const $ = new Env('哔哩哔哩 - 每日任务');
 async function runDailyTasks() {
   try {
     // 加载配置
-    const config = loadConfig(process.env.CONFIG_PATH);
+    let config;
+    try {
+      config = loadConfig(process.env.CONFIG_PATH);
+    } catch (configError) {
+      const errorMessage = configError instanceof Error ? configError.message : '未知错误';
+      if (errorMessage.includes('配置文件不存在')) {
+        mainLogger.error('配置文件不存在！');
+        mainLogger.error('请先运行登录程序生成配置文件：');
+        mainLogger.error('  npm run login');
+        mainLogger.error('或者：');
+        mainLogger.error('  node dist/login.js');
+        process.exit(1);
+      } else {
+        throw configError;
+      }
+    }
     
     // 初始化HTTP客户端
     initHttpClient(config);
